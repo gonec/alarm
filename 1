@@ -1,0 +1,35 @@
+SET PROJECT_DIR=%CD%
+CD %PROJECT_DIR%
+set VERSION=%1
+
+call "C:\Qt5.6\5.6\msvc2013\bin\qtenv2.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+
+echo ------ CLEAN ALL ------
+echo %date% %time%
+rmdir /S /Q C:\lampstudio2\build 2> nul
+mkdir C:\lampstudio2\build
+rmdir /S /Q C:\lampstudio2\winbundle 2> nul
+mkdir C:\lampstudio2\winbundle\
+echo %date% %time%
+echo ------ END CLEANING ------
+SET PRO_DIR="C:\Users\AVK\Documents\alarm
+SET PATH=%PATH%;C:\Program Files (x86)\NSIS
+echo %date% %time%
+REM cd C:\lampstudio2\build
+cd %PROJECT_DIR%
+C:\Qt5.6\5.6\msvc2013\bin\qmake.exe %PRO_DIR%alarm.pro" -r -spec win32-msvc2013 "CONFIG+=release"
+rem CD %PROJECT_DIR%
+"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\nmake.exe" /S
+
+echo ------------- COMPYLATION FINISHED ---------
+
+
+REM copy ..\*.qm C:\lampstudio2\winbundle\
+echo -------- COPY LAMPSTUDIO.EXE ------------
+copy C:\lampstudio2\lampmediastudio\release\LampStudio.exe C:\lampstudio2\winbundle\
+copy C:\lampstudio2\lampmediastudio\curl\2013\libcurl.dll C:\lampstudio2\winbundle\
+copy C:\lampstudio2\Installer\libmysql.dll C:\lampstudio2\winbundle\
+cd C:\lampstudio2\winbundle\
+windeployqt --release --concurrent --compiler-runtime --no-translations LampStudio.exe
+makensis.exe /DVERSION=%VERSION% C:\lampstudio2\Installer\installer.nsi
