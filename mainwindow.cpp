@@ -41,11 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(mSynchronizer, SIGNAL( show_MessagesStatistics(int, int) ), this, SLOT( showMessagesStatistics(int,int) ));
 
-
-
-
-
-
     mSynchronizer->start();
     mFilesMonitor->start();
     mPinger = new Ping(

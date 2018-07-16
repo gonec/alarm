@@ -193,7 +193,6 @@
     <property name="title">
      <string>Настройки</string>
     </property>
-    <addaction name="action_FTP"/>
     <addaction name="action_DB"/>
     <addaction name="action_STORAGE"/>
    </widget>

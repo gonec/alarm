@@ -8,7 +8,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include "db.h"
+
 #include "message.h"
 #include "filesmonitor.h"
 #include "coordparser.h"
@@ -57,29 +57,21 @@ public slots:
 
 
     void progress(int, int);
-    //void progressFTP(int total, int proceed);
+
     void show_progressDB(int total, int proceed);
-    //Больше за перл не отвечаем
 
-    //void downloader_info(QString data);
-
-   // void show_queue_size();
     void slot_queue_progress_info(int listSize, int saved_counter);
     void showMessagesStatistics(int, int);
     void show_db_settings();
 
 private slots:
-    //void on_pushButton_clicked();
-
-   // void on_radioButton_clicked();
 
 
     void on_action_STORAGE_triggered();
 
 signals:
     //Сигнал на удаление файла, т.к. он уже обработан!
-    //void remove_ftp_file(QString);
-    //void queue_progress_info(int listSize, int saved_counter);
+
     void show_MessagesStatistics(int, int);
 private:
 

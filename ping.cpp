@@ -16,12 +16,9 @@ void Ping::run(){
     db2.setUserName(mLogin);
     db2.setPassword(mPassword);
     db2.setConnectOptions("MYSQL_OPT_RECONNECT=1");
-
-
-
+    const int cPingTimeout = 60;
     while (true) {
-        qDebug()<<"PING: "<<currentThreadId();
-        sleep(60);
+        sleep(cPingTimeout);
         db2.open();
         if ( db2.isOpen() ) {
             QSqlQuery fq(db2);
