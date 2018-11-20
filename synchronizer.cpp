@@ -63,6 +63,7 @@ void  Synchronizer::slotProcessMessages () {
         emit queue_progress_info(listSize, counter);
         //emit show_progressDB(listSize, counter);
         //если еще не сохранили в БД, то
+
         if ( !isSavedToDB( (*it).fileName() ) ) {
         //if ( !(*it).isSavedToDB() ) {
             //сохраняем
@@ -75,6 +76,7 @@ void  Synchronizer::slotProcessMessages () {
                     saved_counter++;
             }
             else{
+                (*it).showAllInfo();
                 qDebug()<<"COMPLETE: SAVING TO DB ERROR!!!";
             }
         }
@@ -169,12 +171,13 @@ bool Synchronizer::saveMessageToDb(Message &message){
    }
    if ( !query.exec() ){
        qDebug()<<"ERROR INSERT INTO MESSAGES: ERROR error is: "<<query.lastError();
+       qDebug()<<"MESSAGE DATE: "<<message.date().toString();
        qDebug()<<"============ END ======================";
 
        return false;
    }
    else {
-      // qDebug()<<"INSERTED INTO MESSAGES OK";
+       qDebug()<<"INSERTED INTO MESSAGES OK";
        QVariant id = query.lastInsertId();
        QString strId = id.toString();
        QList<DataRecord>::iterator it;
@@ -253,6 +256,7 @@ void  Synchronizer::income_message(QString s, QByteArray b, int point_size){
 }
 
 void Synchronizer::remove(QString fl) {
+    qDebug()<<"Synchronizer::remove...";
     QList<Message>::iterator it;
     int listSize = mMsgGenerator->mMessagesList.size();
 

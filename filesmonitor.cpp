@@ -26,13 +26,20 @@ void FilesMonitor::slotProcessFiles(){
         int counter = 0;
         //перебираем их
         foreach (QString ftpFile, currentFtpFiles) {
+            //qDebug()<<"INSIDE FOREACH";
             counter++;
-            if ( isInQueue(ftpFile)  )
+            if ( isInQueue(ftpFile)  ){
+                //qDebug()<<"BEFORE ADD";
                 addToQueue(ftpFile);
+               // qDebug()<<"AFTER ADD";
 
+            }
+           // qDebug()<<"SHOW PERCENT";
             if ( ((counter % 10) == 0 && filesNum) || (filesNum == counter)){
                 emit sig_progress( filesNum, mFtpMessagesList.size() );
             }
+           // qDebug()<<"FOREACH";
+            //qDebug()<<currentFtpFiles.size();
         }
         sleep(1);
 }
@@ -57,13 +64,18 @@ bool FilesMonitor::deleteFtpFile(QString filename){
        return false;
 }
 void FilesMonitor::addToQueue(QString fileName) {
+    //qDebug()<<"FilesMonitor::addToQueue";
     FtpMessage ftpMessage(fileName, getFtpDir());
     ftpMessage.getBodyContent();
+    //qDebug()<<"HERE";
     mFtpMessagesList.append(ftpMessage);
+      //qDebug()<<"HERE2";
     emit new_message(fileName, ftpMessage.mBody, ftpMessage.coordSize() );
+      //qDebug()<<"EMIT 2";
 }
 
 bool FilesMonitor::isInQueue(QString fileName) {
+
     foreach (FtpMessage fmsg, mFtpMessagesList) {
         if ( fmsg.fileName() == fileName ) {
             return false;
@@ -85,12 +97,13 @@ void FilesMonitor::remove_ftp_filemessage(QString fl){
               //qDebug()<<"SUCCESFULLY DELETED "<<fl;
           }
           else{
-              qDebug()<<"CAN NOT REMOVE";
+             // qDebug()<<"CAN NOT REMOVE";
           }
-          mFtpMessagesList.removeAt(i);
+        // qDebug()<<"FilesMonitor::REMOVING: ";
+         mFtpMessagesList.removeAt(i);
           //ОБРАТНАЯ СВЯЗЬ
           emit remove(fl);
-          qDebug()<<"fl found removing! OK "<<fl;
+          //qDebug()<<"fl found removing! OK "<<fl;
           break;
       }
     }

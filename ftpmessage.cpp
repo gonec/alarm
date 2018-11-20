@@ -18,14 +18,33 @@ bool FtpMessage::isProcessed() const{
 }
 */
 bool FtpMessage::getBodyContent() {
+    //qDebug()<<"FtpMessage::getBodyContent";
     QString fullFileName = mFtpDir + mFileName;
-    QFile* file_ = new QFile(fullFileName);
-    if (!file_->open(QIODevice::ReadOnly | QIODevice::Text)) {
-        delete file_;
+    //qDebug()<<"MEMORY";
+
+
+    QFile file_(fullFileName);
+    //qDebug()<<"AFTER: "<<fullFileName;
+   // if(file_.exists()){
+        //qDebug()<<"EXISTS";
+   // }
+   // else {
+       // qDebug()<<"NOT EXISTS";
+  //  }
+    if (!file_.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug()<<"OPENED FAILURE!";
+        //delete file_;
         return false;
     }
-    QXmlStreamReader xml(file_);
+    else
+    {
+     //   qDebug()<<"OPENED Ok!";
+
+    }
+   // qDebug()<<"SUSPECIOUS";
+    QXmlStreamReader xml(&file_);
     while ( !xml.atEnd() && !xml.hasError() ) {
+
         QXmlStreamReader::TokenType token = xml.readNext();
         if (token == QXmlStreamReader::StartDocument)
             continue;
@@ -42,9 +61,9 @@ bool FtpMessage::getBodyContent() {
                 //qDebug()<< "MBODY SIZE1 = " << message.size();
                 //qDebug()<< "MBODY HEX" << message.toHex();
                 mHat = message.left(16);
-                QByteArray name = mHat.left(9);
-                int separator = mHat[8+1];
-                int version = mHat[8+2];
+                //QByteArray name = mHat.left(9);
+                //int separator = mHat[8+1];
+                //int version = mHat[8+2];
 
                 bool ok;
                 QByteArray BtLen = mHat.mid(11,1);
@@ -67,16 +86,18 @@ bool FtpMessage::getBodyContent() {
                 else{
                     qDebug()<<"Message not Valid";
                 }
-                file_->close();
-                delete file_;
+
+                file_.close();
+                //delete file_;
+                 //qDebug()<<"FILE DELETE: ";
                 return true;
             }
         }
     }
 
 
-    file_->close();
-    delete file_;
+    file_.close();
+    //delete file_;
 return true;
 }
 

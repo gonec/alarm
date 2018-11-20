@@ -34,20 +34,32 @@ QString Message::text() {
       return t;
 }
 
-void Message::makeHeader(QString fl) {
+bool Message::makeHeader(QString fl) {
+
+    //return true;
+    qDebug()<<"MAKE HEADER";
     //TODO сделать проверку расширения и обработку ошибок
     /*
     QString extension = ".msg";
     int point = fl.indexOf(".msg");
     */
+
+    qDebug()<<"FL "<<fl;
     QString str = fl.left( fl.size() - 4);
+    qDebug()<<"STR: "<<str;
     QStringList strParts = str.split('_');
+    if (strParts.size() < 6) {
+
+        return false;
+    }
+  // qDebug()<<"FALE :";
     QString dateStr = strParts[6];
-
+   // std::cout<<mIncomeDate.toString().toLatin1().toStdString();
+   // std::cout.flush();
     mIncomeDate = QDateTime::fromString(dateStr, "yyyyMMddhhmmss");
-
     mIdStrange = strParts[5];
     mAtNum = strParts[1];
+    return true;
 }
 
 bool Message::isAlarm(){
@@ -105,6 +117,7 @@ DEFCON_LEVEL Message::getDEFCON() {
     return DEFCON_5;
 }
 void Message::showAllInfo(){
+    qDebug()<<"FILENAME "<<mFileName;
     //qDebug()<<"=== SUBMESSAGE ====";
     QList<DataRecord>::iterator i;
 
@@ -129,10 +142,12 @@ QString Message::a(int num, QString sensorName){
     }
     return res;
 }
+
 QString Message::b(int num){
      QString res="<td>b"+QString::number(num)+"</td>";
      return res;
 }
+
 QString Message::getShortInfo(){
     QList<DataRecord>::iterator i;
     QString info;

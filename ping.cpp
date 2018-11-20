@@ -25,7 +25,7 @@ void Ping::run(){
             QString qr= QString("UPDATE services SET updated_at=NOW() WHERE id=1");
             //qDebug()<<"PING BEFORE FAIL DB2:"<<db2;
             if( fq.exec(qr) ) {
-                //qDebug()<<"UPDATED OK!";
+                qDebug()<<"UPDATED OK!";
             }
             else {
                 qDebug()<<"UPDATED FAILED";

@@ -9,7 +9,7 @@
 #include "latlong.h"
 #include "sensors.h"
 #include "coords.h"
-
+#include <iostream>
 
 enum DEFCON_LEVEL {
      DEFCON_1 = 1,
@@ -26,7 +26,7 @@ public:
       Message();
       bool isSavedToDB() const;
       void addDataRecord(DataRecord );
-      void makeHeader(QString fl);
+      bool makeHeader(QString fl);
       QString mFileName;
       QString text();
       bool flValid;
