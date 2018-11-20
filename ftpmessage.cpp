@@ -20,28 +20,13 @@ bool FtpMessage::isProcessed() const{
 bool FtpMessage::getBodyContent() {
     //qDebug()<<"FtpMessage::getBodyContent";
     QString fullFileName = mFtpDir + mFileName;
-    //qDebug()<<"MEMORY";
-
-
     QFile file_(fullFileName);
-    //qDebug()<<"AFTER: "<<fullFileName;
-   // if(file_.exists()){
-        //qDebug()<<"EXISTS";
-   // }
-   // else {
-       // qDebug()<<"NOT EXISTS";
-  //  }
     if (!file_.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug()<<"OPENED FAILURE!";
-        //delete file_;
+
         return false;
     }
-    else
-    {
-     //   qDebug()<<"OPENED Ok!";
 
-    }
-   // qDebug()<<"SUSPECIOUS";
     QXmlStreamReader xml(&file_);
     while ( !xml.atEnd() && !xml.hasError() ) {
 
@@ -88,8 +73,6 @@ bool FtpMessage::getBodyContent() {
                 }
 
                 file_.close();
-                //delete file_;
-                 //qDebug()<<"FILE DELETE: ";
                 return true;
             }
         }
@@ -97,8 +80,7 @@ bool FtpMessage::getBodyContent() {
 
 
     file_.close();
-    //delete file_;
-return true;
+ return true;
 }
 
 bool FtpMessage::setCoordSize(int sz) {
