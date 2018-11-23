@@ -29,11 +29,10 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QString iniFile, QWidget *parent = 0);
     ~MainWindow();
-    QStringListModel *model_;
+
     FilesMonitor *mFilesMonitor;
     FilesMonitor *mFilesMonitor2;
     MessagesGenerator  *mMsgGenerator;
@@ -42,31 +41,21 @@ public:
     Settings* mSettings;
     //Диалог с настройками базы данных
     DialogDB *mDialogDbSettings;
-
     //Диалог с настройками хранилища данных
     DialogStorage *mDialogStorage;
-
     MyServer *mServer;
-
     Synchronizer *mSynchronizer;
-
     Ping *mPinger;
+    QString mIniFile;
 public slots:
     void errorOccurred(QProcess::ProcessError error);
-
-
-
     void progress(int, int);
-
     void show_progressDB(int total, int proceed);
-
     void slot_queue_progress_info(int listSize, int saved_counter);
     void showMessagesStatistics(int, int);
     void show_db_settings();
 
 private slots:
-
-
     void on_action_STORAGE_triggered();
 
 signals:
@@ -74,14 +63,7 @@ signals:
 
     void show_MessagesStatistics(int, int);
 private:
-
-
-
     bool flFtpReceiving;
-
-
-
-
     Ui::MainWindow *ui;
 };
 

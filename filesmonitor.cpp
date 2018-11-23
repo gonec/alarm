@@ -8,7 +8,7 @@ FilesMonitor::FilesMonitor(QString ftpFilesDir, QObject *parent) : QThread(paren
 }
 
 QStringList FilesMonitor::getFtpFilesList() {
-
+    qDebug()<<"FTP DIR: "<<m_dir;
     m_dir.setFilter(QDir::Files  | QDir::NoSymLinks);
     QStringList messages = m_dir.entryList( QStringList("*.msg") );
     return messages;
@@ -18,7 +18,7 @@ QStringList FilesMonitor::getFtpFilesList() {
 void FilesMonitor::slotProcessFiles(){
 
         //получаем список всех файлов
-        //qDebug()<<"FilesMonitor GETTING FILES LIST";
+        qDebug()<<"FilesMonitor GETTING FILES LIST";
         QStringList currentFtpFiles = getFtpFilesList();
 
         int filesNum = currentFtpFiles.size();

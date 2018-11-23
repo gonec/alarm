@@ -14,9 +14,10 @@ class DialogDB : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogDB(QWidget *parent = 0);
+    explicit DialogDB(QString iniFile, QWidget *parent = 0);
     ~DialogDB();
     QSettings *mIniSettings;
+    QString mIniFile;
 public slots:
     void accept();
     QString db_host();

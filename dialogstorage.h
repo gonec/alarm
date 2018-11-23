@@ -11,9 +11,9 @@ class DialogStorage : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogStorage(QWidget *parent = 0);
+    explicit DialogStorage(QString iniFile, QWidget *parent = 0);
     ~DialogStorage();
-
+    QString mIniFile;
 private:
     Ui::DialogStorage *ui;
 

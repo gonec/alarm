@@ -3,13 +3,13 @@
 #include <QXmlStreamReader>
 #define SQL_DEBUG
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow(QString iniFile,QWidget *parent) :
+    QMainWindow(parent), mIniFile(iniFile),
     ui(new Ui::MainWindow)
 {
-    mDialogDbSettings = new DialogDB();
-    mDialogStorage = new DialogStorage();
-    mSettings = new Settings(parent);
+    mDialogDbSettings = new DialogDB(mIniFile);
+    mDialogStorage = new DialogStorage(mIniFile);
+    mSettings = new Settings(mIniFile,parent);
     ui->setupUi(this);
     QString ftpDir = mSettings->getFtpDir();
 

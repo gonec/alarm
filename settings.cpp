@@ -1,15 +1,13 @@
 #include "settings.h"
 #include "ui_settings.h"
 
-Settings::Settings(QWidget *parent) :
-    QWidget(parent),
+Settings::Settings(QString iniFile, QWidget *parent) :
+    QWidget(parent), mIniFile(iniFile),
     ui(new Ui::Settings)
 {
     ui->setupUi(this);
-    QSettings settings;
-    QString ini_file = settings.value(QString("ini_file")).toString();
-    //qDebug()<<""
-    mIniSettings = new QSettings(ini_file, QSettings::IniFormat);
+
+    mIniSettings = new QSettings(mIniFile, QSettings::IniFormat);
     mIniSettings->beginGroup("ftp");
     QString login = mIniSettings->value("ftp_login").toString();
     QString pass  = mIniSettings->value("ftp_password").toString();
@@ -19,7 +17,7 @@ Settings::Settings(QWidget *parent) :
 
 
     mIniSettings->endGroup();
-    mIniFile = ini_file;
+
     mLogin = login;
     mPassword = pass;
     mScriptPath = scriptPath;
@@ -185,8 +183,7 @@ void Settings::setScriptPath(QString scriptPath){
     saveSettings();
 }
 void Settings::saveSettings(){
-  // QSetings settings;
-    //settings.setValue(QString("ini_file")).toString();
+
     mIniSettings->beginGroup("ftp");
     mIniSettings->setValue("ftp_login", mLogin) ;
     mIniSettings->setValue("ftp_password", mPassword ) ;

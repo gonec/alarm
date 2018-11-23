@@ -1,16 +1,14 @@
 #include "dialogstorage.h"
 #include "ui_dialogstorage.h"
 
-DialogStorage::DialogStorage(QWidget *parent) :
-    QDialog(parent),
+DialogStorage::DialogStorage(QString iniFile, QWidget *parent) :
+    QDialog(parent), mIniFile(iniFile),
     ui(new Ui::DialogStorage)
 {
     ui->setupUi(this);
 
-    QSettings settings;
-    QString ini_file = settings.value( QString("ini_file") ).toString();
 
-    mIniSettings = new QSettings(ini_file, QSettings::IniFormat);
+    mIniSettings = new QSettings(mIniFile, QSettings::IniFormat);
     mIniSettings->beginGroup("storage");
 
 

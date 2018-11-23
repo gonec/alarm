@@ -7,13 +7,13 @@
 #include <QTimer>
 #include <QThread>
 #include <QMutex>
-#include <windows.h>
+//#include <windows.h>
 #include <iostream>
 #include "message.h"
 #include "ftpmessage.h"
-#include <direct.h>
+//#include <direct.h>
 #include <cstdlib>
-#include <tchar.h>
+//#include <tchar.h>
 #include <stdio.h>
 class FilesMonitor : public QThread
 {

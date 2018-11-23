@@ -16,10 +16,10 @@ class Settings : public QWidget
     Q_OBJECT
 
 public:
-    explicit Settings(QWidget *parent = 0);
+    explicit Settings(QString iniFile, QWidget *parent = 0);
     ~Settings();
 
-
+    QString mIniFile;
     void setSettings();
     void loadSettings();
     QSettings settings;
@@ -45,7 +45,7 @@ public:
     QString mScriptPath;
     QString mLogin;
     QString mPassword;
-    QString mIniFile;
+
 private slots:
 
 

@@ -1,7 +1,7 @@
 #ifndef SENSORS_H
 #define SENSORS_H
-#include <QDebug.h>
-#include <QMap.h>
+#include <QDebug>
+#include <QMap>
 #include <iostream>
 struct Sensors
 {

@@ -2,14 +2,13 @@
 #include "ui_dialogdb.h"
 #include <QDebug>
 #include <QSqlDatabase>
-DialogDB::DialogDB(QWidget *parent) :
-    QDialog(parent),
+DialogDB::DialogDB(QString iniFile, QWidget *parent) :
+    QDialog(parent), mIniFile(iniFile),
     ui(new Ui::DialogDB)
 {
     ui->setupUi(this);
-    QSettings settings;
-    QString ini_file = settings.value(QString("ini_file")).toString();
-    mIniSettings = new QSettings(ini_file, QSettings::IniFormat);
+
+    mIniSettings = new QSettings(mIniFile, QSettings::IniFormat);
     mIniSettings->beginGroup("db");
     mHost     = mIniSettings->value("db_host").toString();
     mDbname   = mIniSettings->value("db_name").toString();
