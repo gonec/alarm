@@ -1,1 +1,6 @@
 alarm.pro.user
+*.o
+moc_*
+ui_
+alarm
+

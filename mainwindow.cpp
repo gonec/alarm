@@ -49,7 +49,10 @@ MainWindow::MainWindow(QString iniFile,QWidget *parent) :
                 mDialogDbSettings->db_login(),
                 mDialogDbSettings->db_password()
                 );
+    //Move Window from left margin
     mPinger->start();
+    QPoint margin(300,300);
+    move(margin);
 
 }
 
