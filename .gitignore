@@ -3,4 +3,5 @@ alarm.pro.user
 moc_*
 ui_
 alarm
+Makefile
 
