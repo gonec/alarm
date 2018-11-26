@@ -1,7 +1,7 @@
-alarm.pro.user
+alarm.pro.*
 *.o
 moc_*
-ui_
+ui_*
 alarm
 Makefile
 
