@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QDate>
 #include <QDateTime>
+#include <QDateTime>
+#include <QChar>
 #include "datarecord.h"
 #include "timestruct.h"
 #include "latlong.h"
@@ -67,9 +69,10 @@ public:
 
       QString id2() const ;
       QString fileName() const;
+      bool is_extend() const;
+      bool flExtend;
 private:
         bool flSavedToDB;
-
         int mPointSize;
 };
 #endif // MESSAGE_H

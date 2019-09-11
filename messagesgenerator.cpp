@@ -22,7 +22,7 @@ void MessagesGenerator::income_message(QString flname, QByteArray body, int poin
     }
     else {
 
-        qDebug()<<"MAKE HEADER ERROR! ";
+        //qDebug()<<"MAKE HEADER ERROR! ";
         return ;
     }
     addMessage(msg);

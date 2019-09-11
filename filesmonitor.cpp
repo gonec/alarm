@@ -28,7 +28,7 @@ void FilesMonitor::slotProcessFiles(){
         foreach (QString ftpFile, currentFtpFiles) {
             //qDebug()<<"INSIDE FOREACH";
             counter++;
-            if ( isInQueue(ftpFile)  ){
+            if ( isInQueue(ftpFile)  ) {
                 //qDebug()<<"BEFORE ADD";
                 addToQueue(ftpFile);
                // qDebug()<<"AFTER ADD";
@@ -75,7 +75,6 @@ void FilesMonitor::addToQueue(QString fileName) {
 }
 
 bool FilesMonitor::isInQueue(QString fileName) {
-
     foreach (FtpMessage fmsg, mFtpMessagesList) {
         if ( fmsg.fileName() == fileName ) {
             return false;

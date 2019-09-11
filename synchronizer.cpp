@@ -142,14 +142,15 @@ bool Synchronizer::saveMessageToDb(Message &message){
 
 
     QSqlQuery query(db);
-    query.prepare("INSERT INTO messages (received, terminal, id_2, file_id, course, coords_count, alarm_code) "
+    query.prepare("INSERT INTO messages (received, terminal, id_2, file_id, course, coords_count, alarm_code, is_extend) "
                       "VALUES (:received,"
                       " :terminal,"
                       " :id_2,"
                       " :file_id,"
                       " :course,"
                       " :coords_count,"
-                      " :alarm_code);"
+                      " :alarm_code,"
+                      " :is_extend);"
                   );
 
    QDateTime rcv_time = message.date();
@@ -169,6 +170,14 @@ bool Synchronizer::saveMessageToDb(Message &message){
    {
         query.bindValue(":alarm_code", 0);
    }
+   if(message.is_extend()  == true){
+        query.bindValue(":is_extend", 1);
+   }
+   else
+   {
+        query.bindValue(":is_extend", 0);
+   }
+
    if ( !query.exec() ){
        qDebug()<<"ERROR INSERT INTO MESSAGES: ERROR error is: "<<query.lastError();
        qDebug()<<"MESSAGE DATE: "<<message.date().toString();
@@ -202,16 +211,39 @@ bool Synchronizer::saveMessageToDb(Message &message){
 }
 bool Synchronizer::saveCoord(QString id, DataRecord rec ){
     QSqlQuery query(db);
-
-    if( rec.isCourse()  ){
+    if( rec.isExtend() ) {
+       	qDebug()<<"IS EXTEND SENSOR SAVE!!!!!!!!!!!!!!!!"; 
+	query.prepare("INSERT INTO coords (received,  D1, D2, D3, AL, IG, EC, lat_s, lon_s, message_id, extend, A, B) "
+                      "VALUES (:received, :D1, :D2, :D3, :AL, :IG, :EC, :lat_s, :lon_s, :message_id, :extend, :A, :B);"
+                      );
+        QString coordDateTime = rec.datetime().toString("yyyy-MM-dd hh:mm:ss");
+        //qDebug()<<"REC LAT: "<<rec.lat();
+        query.bindValue(":received", coordDateTime );
+       	qDebug()<<"EXTEND: DATE TIME"<<coordDateTime; 
+        query.bindValue(":D1", rec.D1() );
+        query.bindValue(":D2", rec.D2() );
+        query.bindValue(":D3", rec.D3());
+        query.bindValue(":AL", rec.AL());
+        query.bindValue(":IG", rec.IG());
+        query.bindValue(":EC", rec.EC());
+        query.bindValue(":lat_s", QString("'") +rec.lat() + QString("'") );
+        query.bindValue(":lon_s", QString("'") + rec.lon()+  QString("'") );
+        query.bindValue(":message_id", id);
+	qDebug()<<"EXTEND:: "<<QString( rec.extend().toHex());
+	query.bindValue(":extend", QString( rec.extend().toHex()) );
+        query.bindValue(":A", rec.A() );
+        query.bindValue(":A", rec.B() );
+    }
+    else if( rec.isCourse()  ){
         //qDebug()<<"SAVING WITH COURSE";
-        query.prepare("INSERT INTO coords (received,  D1, D2, D3, AL, IG, EC, speed, temperature, course, lat_s, lon_s, message_id) "
-                      "VALUES (:received, :D1, :D2, :D3, :AL, :IG, :EC, :speed, :temperature, :course, :lat_s, :lon_s, :message_id);"
+        query.prepare("INSERT INTO coords (received,  D1, D2, D3, AL, IG, EC, speed, temperature, course, lat_s, lon_s, message_id, A,B) "
+                      "VALUES (:received, :D1, :D2, :D3, :AL, :IG, :EC, :speed, :temperature, :course, :lat_s, :lon_s, :message_id, :A,:B);"
                       );
         QString coordDateTime = rec.datetime().toString("yyyy-MM-dd hh:mm:ss");
         //qDebug()<<"REC LAT: "<<rec.lat();
         query.bindValue( ":received", coordDateTime );
-        query.bindValue( ":D1", rec.D1() );
+       	qDebug()<<"CORSE: DATE TIME"<<coordDateTime; 
+	query.bindValue( ":D1", rec.D1() );
         query.bindValue( ":D2", rec.D2() );
         query.bindValue( ":D3", rec.D3() );
         query.bindValue( ":AL", rec.AL() );
@@ -223,13 +255,18 @@ bool Synchronizer::saveCoord(QString id, DataRecord rec ){
         query.bindValue(":lat_s", QString("'") +rec.lat() + QString("'") );
         query.bindValue(":lon_s", QString("'") + rec.lon()+  QString("'") );
         query.bindValue(":message_id", id);
+	query.bindValue(":A", rec.A() );
+        query.bindValue(":B", rec.B() );
+
    }
+   
    else {
-        query.prepare("INSERT INTO coords (received,  D1, D2, D3, AL, IG, EC, lat_s, lon_s, message_id) "
-                      "VALUES (:received, :D1, :D2, :D3, :AL, :IG, :EC, :lat_s, :lon_s, :message_id);"
+        query.prepare("INSERT INTO coords (received,  D1, D2, D3, AL, IG, EC, lat_s, lon_s, message_id, A, B) "
+                      "VALUES (:received, :D1, :D2, :D3, :AL, :IG, :EC, :lat_s, :lon_s, :message_id, :A, :B);"
                       );
         QString coordDateTime = rec.datetime().toString("yyyy-MM-dd hh:mm:ss");
         //qDebug()<<"REC LAT: "<<rec.lat();
+       	qDebug()<<"ORDINARY: DATE TIME"<<coordDateTime; 
         query.bindValue(":received", coordDateTime );
         query.bindValue(":D1", rec.D1() );
         query.bindValue(":D2", rec.D2() );
@@ -240,6 +277,9 @@ bool Synchronizer::saveCoord(QString id, DataRecord rec ){
         query.bindValue(":lat_s", QString("'") +rec.lat() + QString("'") );
         query.bindValue(":lon_s", QString("'") + rec.lon()+  QString("'") );
         query.bindValue(":message_id", id);
+	query.bindValue(":A", rec.A() );
+        query.bindValue(":B", rec.B() );
+
     }
    if( !query.exec() ){
         qDebug()<<"INSERTED INTO COORDS ERROR reason: "<<query.lastError();

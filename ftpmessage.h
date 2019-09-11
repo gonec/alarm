@@ -1,12 +1,10 @@
 #ifndef FTPMESSAGE_H
 #define FTPMESSAGE_H
-
 #include <QObject>
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QDebug>
 #include "message.h"
-
 class FtpMessage
 {
 
@@ -21,11 +19,20 @@ public:
     void deleteFtpFile(QString fl);
     int coordSize() const;
     //Установим длину записи
-    bool setCoordSize(int );
+    void setCoordSize(const int &);
 signals:
     void new_message();
 
-private:
+private: 
+    bool isValidCoordSize() const;
+    struct Point { 
+	    static const int ORDINARY = 16;
+	    static const int COURSE   = 20;
+	    static const int EXTEND   = 32;    
+	    static const int POINT_LENGTH_POS = 11; 
+	    static const int POINT_LENGTH_SIZE = 1; 
+    };
+
     QString mFtpDir;
     bool flFlarm;
     //корректное ли сообщение!
@@ -37,6 +44,9 @@ private:
     //bool flProcessed;
     QString mFileName;
     int mCoordSize;
+    struct MessageStruct { 
+    	static const int HAT_SIZE = 16;
+    };
 };
 
 #endif // FTPMESSAGE_H

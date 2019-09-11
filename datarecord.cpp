@@ -1,25 +1,50 @@
 #include "datarecord.h"
-DataRecord::DataRecord(TimeStruct tm, Coords coords, Sensors sensors ):mCoords(coords){
-    mTimeStruct = tm;
+DataRecord::DataRecord(){
 
+}
+
+DataRecord::DataRecord(
+			TimeStruct tm,
+			Coords coords,
+			Sensors sensors 
+			): mCoords(coords) {
+    mTimeStruct = tm;
     mSensors = sensors;
+    flExtend = false;
     flCourseWordEnable = false;
 }
-DataRecord::DataRecord(TimeStruct tm,
+  
+DataRecord::DataRecord( 
+			TimeStruct tm,
+                        Coords coords,
+                        Sensors sensors,
+                        Course course
+                       ) : 
+	mCoords(coords) 
+	{
+	mCourse = course;
+	mTimeStruct = tm;
+	mSensors = sensors;
+    	flExtend = false;
+	flCourseWordEnable = true;
+	
+}
+DataRecord::DataRecord(
+		       TimeStruct tm,
                        Coords coords,
                        Sensors sensors,
-                       Course course
+                       Course course,
+		       ExtendSensor ext_sensor
                        ): mCoords(coords) {
     mCourse = course;
     mTimeStruct = tm;
     mSensors = sensors;
     flCourseWordEnable = true;
+    flExtend = true;
+    mExtendSensor = ext_sensor;
 }
-DataRecord::DataRecord(){
 
-}
-
-bool DataRecord::operator == (DataRecord rh){
+bool DataRecord::operator == (DataRecord rh) {
     //return true;
     return (rh.mTimeStruct == this->mTimeStruct);
 }
@@ -80,7 +105,9 @@ int DataRecord::EC() {
 bool DataRecord::isCourse() const {
     return flCourseWordEnable;
 }
-
+bool DataRecord::isExtend() const {
+    return flExtend;
+}
 int DataRecord::temperature() {
     if ( mCourse.mTemperatureSign ) {
         return  -1*mCourse.mTemperature;
@@ -95,4 +122,13 @@ int DataRecord::speed() {
 }
 int DataRecord::course(){
     return mCourse.mCourse;
+}
+QByteArray DataRecord::extend() const {
+    return mExtendSensor.data();
+}
+int DataRecord::A() const {
+    return mSensors.a;
+}
+int DataRecord::B() const {
+    return mSensors.b;
 }

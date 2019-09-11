@@ -34,6 +34,7 @@ MainWindow::MainWindow(QString iniFile,QWidget *parent) :
     connect(mFilesMonitor,  SIGNAL( remove(QString ) ), mSynchronizer, SLOT ( remove(QString) ));
 
     connect(mSynchronizer, SIGNAL(queue_progress_info(int,int)), this, SLOT(slot_queue_progress_info(int,int)));
+    // 
     connect(mSynchronizer, SIGNAL(remove_ftp_file(QString)), mFilesMonitor, SLOT(remove_ftp_filemessage(QString)) );
     connect(mSynchronizer, SIGNAL(show_progressDB(int, int)), this, SLOT(show_progressDB(int, int)));
 

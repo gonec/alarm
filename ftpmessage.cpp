@@ -9,6 +9,7 @@ FtpMessage::FtpMessage(QString fl, QString dir)
     //Сообщение невалидно, пока не проверили что оно имеет корректную длину
     flValid = false;
 }
+
 QString FtpMessage::fileName() const {
     return mFileName;
 }
@@ -21,8 +22,8 @@ bool FtpMessage::getBodyContent() {
     //qDebug()<<"FtpMessage::getBodyContent";
     QString fullFileName = mFtpDir + mFileName;
     QFile file_(fullFileName);
-    if (!file_.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug()<<"OPENED FAILURE!";
+    if ( !file_.open(QIODevice::ReadOnly | QIODevice::Text) ) {
+        qDebug()<<"OPENED FAILURE!" <<mFileName;
 
         return false;
     }
@@ -34,24 +35,24 @@ bool FtpMessage::getBodyContent() {
         if (token == QXmlStreamReader::StartDocument)
             continue;
         if (token == QXmlStreamReader::StartElement) {
-            if (xml.name() == "body") {
+            
+	if (xml.name() == "body") {
                 xml.readNext();
                 QString bodyStr = xml.text().toString();
                 QByteArray myData = QByteArray::fromHex(bodyStr.toLatin1());
-                QByteArray message = myData.right(myData.size());
+                QByteArray message = myData.right( myData.size() );
                 //QByteArray message = myData.right(myData.size()-9);
                 //const int WORD_SIZE = 4;
                 //const int POS_TIME = 7;
                 //mBody=message.right(message.size()-16);
                 //qDebug()<< "MBODY SIZE1 = " << message.size();
                 //qDebug()<< "MBODY HEX" << message.toHex();
-                mHat = message.left(16);
+                mHat = message.left(MessageStruct::HAT_SIZE);
                 //QByteArray name = mHat.left(9);
                 //int separator = mHat[8+1];
                 //int version = mHat[8+2];
-
                 bool ok;
-                QByteArray BtLen = mHat.mid(11,1);
+                QByteArray BtLen = mHat.mid(FtpMessage::Point::POINT_LENGTH_POS, FtpMessage::Point::POINT_LENGTH_SIZE);
 
                 int point_length  = 0;
                 point_length = BtLen.toHex().toInt(&ok, 16);
@@ -61,17 +62,17 @@ bool FtpMessage::getBodyContent() {
                 //qDebug()<<"SEP  "<<separator;
                 //qDebug()<<"VER  "<<version;
                 //qDebug()<<"LEN  "<<point_length;
-                mBody = message.remove(0, 16);
+                mBody = message.remove(0, MessageStruct::HAT_SIZE);
                 //qDebug()<< "MBODY HEX2" << mBody.toHex();
                 //qDebug()<< "MBODY SIZE2 = " << mBody.size();
-                if (  coordSize() && mBody.size() && mHat.size() ) {
-                    qDebug()<<"Message is Valid;";
+                if (  isValidCoordSize() && mBody.size() && mHat.size() ) {
+                    //qDebug()<<"Message is Valid; coord_size: "<<coordSize();
                     flValid = true;
                 }
-                else{
-                    qDebug()<<"Message not Valid";
+                else {
+                    flValid = false;
+                   //qDebug()<<"Message not Valid";
                 }
-
                 file_.close();
                 return true;
             }
@@ -83,13 +84,17 @@ bool FtpMessage::getBodyContent() {
  return true;
 }
 
-bool FtpMessage::setCoordSize(int sz) {
+void FtpMessage::setCoordSize(const int &sz) {
 
-    if( sz == 16 || sz == 20){
         mCoordSize = sz;
-        return true;
-    }
-    return false;
+}
+bool FtpMessage::isValidCoordSize() const {
+	
+        return ( coordSize() == Point::ORDINARY || 
+	     coordSize() == Point::COURSE || 
+	     coordSize() == Point::EXTEND       ) ? true : false;
+
+
 }
 int FtpMessage::coordSize() const {
     return mCoordSize;

@@ -14,6 +14,7 @@ TARGET = alarm
 
 TEMPLATE = app
 SOURCES += main.cpp\
+	extendsensor.cpp \
         datarecord.cpp \
         mainwindow.cpp \
         coordparser.cpp \
@@ -34,6 +35,7 @@ SOURCES += main.cpp\
         course.cpp
 
 HEADERS  += mainwindow.h \
+	extendsensor.h \
         coordparser.h \
         ftpmessage.h \
         message.h \
@@ -46,7 +48,7 @@ HEADERS  += mainwindow.h \
         settings.h \
         myserver.h \
         messagesgenerator.h \
-		synchronizer.h \
+	synchronizer.h \
         ping.h \
         dbsettings.h \
         dialogdb.h \

@@ -8,6 +8,7 @@ Message::Message(){
     flProceed = false;
     flSavedToDB = false;
     flCourseExists = false;
+    flExtend = false;
 }
 bool Message::wasSeen() const {
     return flSeen;
@@ -37,28 +38,54 @@ QString Message::text() {
 bool Message::makeHeader(QString fl) {
 
     //return true;
-    qDebug()<<"MAKE HEADER";
+    //qDebug()<<"MAKE HEADER";
     //TODO сделать проверку расширения и обработку ошибок
     /*
     QString extension = ".msg";
     int point = fl.indexOf(".msg");
     */
+    //qDebug()<<"FL "<<fl;
+    
+    QChar firstPoint('.');
+    int pointPos = fl.indexOf(firstPoint);   
+    
+    if (pointPos != -1) {
+	const int GPS_NAMES = 3;
+	const int GN_NAMES = 7;
+        int flLength = fl.size();
+        //имя файла разделенное подчеркиванием без точки	
+	QString fileName = fl.left( flLength - (flLength - pointPos) );   
+        qDebug()<<"Message::FILE NAME WITHOUT POINT: "<<fileName;
+	QStringList strParts = fileName.split('_');
+	//	
+	if ( strParts.size() == GPS_NAMES ) {
+		const int AT_NUM = 1;	
+		const int DATE_1 = 0;
+		const int DATE_2 = 2; 
+    		QString dateStr = strParts[DATE_1];
+    		mIncomeDate = QDateTime::fromString(dateStr, "yyyyMMddhhmmss");
+    		mAtNum = strParts[AT_NUM];
+		mIdStrange = QString("0");						
+		qDebug()<<"TYPE B: DATE: "<<dateStr<<"   AT NUM: "<<mAtNum;
+	}
+	else if ( strParts.size() == GN_NAMES ) {
+		const int DATE_POS = 6;	
+		const int SECOND_ID = 5;	
+		const int AT_NUM = 1;	
+    		QString dateStr = strParts[DATE_POS];
+    		mIncomeDate = QDateTime::fromString(dateStr, "yyyyMMddhhmmss");
+		mIdStrange = strParts[SECOND_ID];
+    		mAtNum = strParts[AT_NUM];
+		qDebug()<<"TYPE A: DATE: "<<dateStr<<"   AT NUM: "<<mAtNum;
 
-    qDebug()<<"FL "<<fl;
-    QString str = fl.left( fl.size() - 4);
-    qDebug()<<"STR: "<<str;
-    QStringList strParts = str.split('_');
-    if (strParts.size() < 6) {
-
-        return false;
+	}
+	else {
+		return false;
+	}
+    } 
+    else {
+	return false;
     }
-  // qDebug()<<"FALE :";
-    QString dateStr = strParts[6];
-   // std::cout<<mIncomeDate.toString().toLatin1().toStdString();
-   // std::cout.flush();
-    mIncomeDate = QDateTime::fromString(dateStr, "yyyyMMddhhmmss");
-    mIdStrange = strParts[5];
-    mAtNum = strParts[1];
     return true;
 }
 
@@ -86,12 +113,17 @@ void Message::calculateDefCon() {
             flIgnition     = true;
         if ( (*i).mSensors.D3 == 1 )
             flJailBreaking = true;
+        /*если где-нибудь есть расширенные данные то помечаем все сообщение как имеющее расширенные данные*/		
+	if ( (*i).isExtend() != false  ){
+           	qDebug()<<"flExtnedSensor!=FALSE"; 
+		flExtend = true;
+	}
      }
+
 }
 
 DEFCON_LEVEL Message::getDEFCON() {
-    if( flAlarm || flIgnition || flJailBreaking ){
-
+    if( flAlarm || flIgnition || flJailBreaking ) {
         return DEFCON_1;
     }
     //Тревоги нет
@@ -117,14 +149,12 @@ DEFCON_LEVEL Message::getDEFCON() {
     return DEFCON_5;
 }
 void Message::showAllInfo(){
-    qDebug()<<"FILENAME "<<mFileName;
+    qDebug()<<"FILENAME " << mFileName;
     //qDebug()<<"=== SUBMESSAGE ====";
     QList<DataRecord>::iterator i;
-
     for(i = mRecords.begin(); i != mRecords.end(); ++i) {
        // qDebug()<<"----------------------";
         (*i).mTimeStruct.show();
-
         //qDebug()<<(*i).mSensors.IG<<(*i).mSensors.AL<<(*i).mSensord.D1;
        // (*i).mCoords.show();
         //qDebug()<<"-----------------------";
@@ -203,26 +233,8 @@ QString Message::getInfo(){
                 td( QString::number(k))  +
                 td( (*i).mTimeStruct.getDate().toString() ) +
                 td( (*i).mTimeStruct.getTime().toString() ) +
-                td( QString::number((*i).mSensors.a0) ) +
-                td( QString::number((*i).mSensors.a1) ) +
-                td( QString::number((*i).mSensors.a2) ) +
-                td( QString::number((*i).mSensors.a3) ) +
-                td( QString::number((*i).mSensors.a4) ) +
-                td( QString::number((*i).mSensors.a5) ) +
-                td( QString::number((*i).mSensors.a6) ) +
-                td( QString::number((*i).mSensors.a7) ) +
-                td( QString::number((*i).mSensors.a8) ) +
-                td( QString::number((*i).mSensors.a9) ) +
-                td( QString::number((*i).mSensors.b0) ) +
-                td( QString::number((*i).mSensors.b1) ) +
-                td( QString::number((*i).mSensors.b2) ) +
-                td( QString::number((*i).mSensors.b3) ) +
-                td( QString::number((*i).mSensors.b4) ) +
-                td( QString::number((*i).mSensors.b5) ) +
-                td( QString::number((*i).mSensors.b6) ) +
-                td( QString::number((*i).mSensors.b7) ) +
-                td( QString::number((*i).mSensors.b8) ) +
-                td( QString::number((*i).mSensors.b9) ) +
+                td( QString::number((*i).mSensors.a) ) +
+                td( QString::number((*i).mSensors.b) ) +
                 td( QString::number((*i).mSensors.D1) ) +
                 td( QString::number((*i).mSensors.D2) ) +
                 td( QString::number((*i).mSensors.D3) ) +
@@ -299,4 +311,7 @@ int Message::pointSize() const {
 
 void Message::setPointSize(int sz) {
     mPointSize = sz;
+}
+bool Message::is_extend() const {
+	return flExtend;
 }
